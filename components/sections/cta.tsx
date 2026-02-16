@@ -30,6 +30,8 @@ export function CTASection() {
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward')
   const [isVisible, setIsVisible] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -39,6 +41,7 @@ export function CTASection() {
   })
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({})
   const ref = useRef<HTMLDivElement>(null)
+  const hasInitializedFocus = useRef(false)
   const nameRef = useRef<HTMLInputElement>(null)
   const companyRef = useRef<HTMLInputElement>(null)
   const briefRef = useRef<HTMLTextAreaElement>(null)
@@ -61,6 +64,11 @@ export function CTASection() {
   }, [])
 
   useEffect(() => {
+    if (!hasInitializedFocus.current) {
+      hasInitializedFocus.current = true
+      return
+    }
+
     if (step === 1) nameRef.current?.focus()
     if (step === 2) companyRef.current?.focus()
     if (step === 3) briefRef.current?.focus()
@@ -122,9 +130,37 @@ export function CTASection() {
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const submit = async () => {
+      setIsSubmitting(true)
+      setSubmitError(null)
+
+      try {
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        })
+
+        const data = (await response.json()) as { success?: boolean; message?: string }
+
+        if (!response.ok || !data.success) {
+          setSubmitError(data.message ?? 'Something went wrong. Please try again.')
+          return
+        }
+
+        setIsSubmitted(true)
+      } catch {
+        setSubmitError('Network error. Please try again.')
+      } finally {
+        setIsSubmitting(false)
+      }
+    }
+
     event.preventDefault()
     if (!validateStep(3)) return
-    setIsSubmitted(true)
+    void submit()
   }
 
   const resetForm = () => {
@@ -138,6 +174,7 @@ export function CTASection() {
     setErrors({})
     setStep(1)
     setIsSubmitted(false)
+    setSubmitError(null)
   }
 
   const getStepPanelClass = (targetStep: Step) => {
@@ -195,9 +232,9 @@ export function CTASection() {
                 <p className="text-sm font-medium text-muted-foreground">Step {step} of 3</p>
               </div>
 
-              <div className="relative overflow-hidden min-h-[248px]">
+              <div className="relative min-h-[248px]">
                 <div className={`w-full transition-all duration-300 ease-out ${getStepPanelClass(1)}`}>
-                  <div className="space-y-4">
+                  <div className="space-y-4 px-1">
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
                         Name <span className="text-muted-foreground">*</span>
@@ -208,7 +245,7 @@ export function CTASection() {
                         value={formData.name}
                         onChange={(e) => handleInputChange('name', e.target.value)}
                         placeholder="Your full name"
-                        className="h-11 bg-background border-border"
+                        className="h-11 bg-background border-border focus-visible:ring-1 focus-visible:ring-[#3B82F6] focus-visible:ring-offset-0"
                       />
                       {errors.name ? <p className="mt-2 text-sm text-[#B91C1C]">{errors.name}</p> : null}
                     </div>
@@ -223,7 +260,7 @@ export function CTASection() {
                         value={formData.email}
                         onChange={(e) => handleInputChange('email', e.target.value)}
                         placeholder="you@company.com"
-                        className="h-11 bg-background border-border"
+                        className="h-11 bg-background border-border focus-visible:ring-1 focus-visible:ring-[#3B82F6] focus-visible:ring-offset-0"
                       />
                       {errors.email ? <p className="mt-2 text-sm text-[#B91C1C]">{errors.email}</p> : null}
                     </div>
@@ -231,7 +268,7 @@ export function CTASection() {
                 </div>
 
                 <div className={`w-full transition-all duration-300 ease-out ${getStepPanelClass(2)}`}>
-                  <div className="space-y-4">
+                  <div className="space-y-4 px-1">
                     <div>
                       <label htmlFor="company" className="block text-sm font-medium text-foreground mb-2">
                         Company <span className="text-muted-foreground">*</span>
@@ -242,7 +279,7 @@ export function CTASection() {
                         value={formData.company}
                         onChange={(e) => handleInputChange('company', e.target.value)}
                         placeholder="Company name"
-                        className="h-11 bg-background border-border"
+                        className="h-11 bg-background border-border focus-visible:ring-1 focus-visible:ring-[#3B82F6] focus-visible:ring-offset-0"
                       />
                       {errors.company ? <p className="mt-2 text-sm text-[#B91C1C]">{errors.company}</p> : null}
                     </div>
@@ -255,7 +292,7 @@ export function CTASection() {
                         id="budget"
                         value={formData.budgetRange}
                         onChange={(e) => handleInputChange('budgetRange', e.target.value)}
-                        className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#3B82F6] focus-visible:ring-offset-0"
                       >
                         <option value="">Select budget range</option>
                         {BUDGET_OPTIONS.map((option) => (
@@ -270,7 +307,7 @@ export function CTASection() {
                 </div>
 
                 <div className={`w-full transition-all duration-300 ease-out ${getStepPanelClass(3)}`}>
-                  <div>
+                  <div className="px-1">
                     <label htmlFor="projectBrief" className="block text-sm font-medium text-foreground mb-2">
                       Project brief <span className="text-muted-foreground">*</span>
                     </label>
@@ -280,7 +317,7 @@ export function CTASection() {
                       value={formData.projectBrief}
                       onChange={(e) => handleInputChange('projectBrief', e.target.value)}
                       placeholder="Describe goals, timelines, and key requirements."
-                      className="min-h-[170px] bg-background border-border resize-none"
+                      className="min-h-[170px] bg-background border-border resize-none focus-visible:ring-1 focus-visible:ring-[#3B82F6] focus-visible:ring-offset-0"
                     />
                     {errors.projectBrief ? <p className="mt-2 text-sm text-[#B91C1C]">{errors.projectBrief}</p> : null}
                   </div>
@@ -292,22 +329,23 @@ export function CTASection() {
                   type="button"
                   variant="outlineNeutral"
                   onClick={handleBack}
-                  disabled={step === 1}
+                  disabled={step === 1 || isSubmitting}
                   className={step === 1 ? 'opacity-40 cursor-not-allowed' : ''}
                 >
                   Back
                 </Button>
 
                 {step < 3 ? (
-                  <Button type="button" variant="primaryBlue" onClick={handleNext}>
+                  <Button type="button" variant="primaryBlue" onClick={handleNext} disabled={isSubmitting}>
                     Next Step
                   </Button>
                 ) : (
-                  <Button type="submit" variant="primaryBlue">
-                    Submit Project
+                  <Button type="submit" variant="primaryBlue" disabled={isSubmitting}>
+                    {isSubmitting ? 'Sending...' : 'Submit Project'}
                   </Button>
                 )}
               </div>
+              {submitError ? <p className="mt-4 text-sm text-[#B91C1C]">{submitError}</p> : null}
             </form>
           ) : (
             <div className="text-center py-8">
