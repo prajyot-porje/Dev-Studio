@@ -4,64 +4,74 @@
 
 @layer base {
   :root {
-    /* Light theme - premium minimalist */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 6.7%;
+    color-scheme: light;
+    --background: 210 38% 97%;
+    --foreground: 222 34% 14%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 6.7%;
+    --card-foreground: 222 34% 14%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 6.7%;
-    --primary: 0 0% 6.7%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 96.9%;
-    --secondary-foreground: 0 0% 6.7%;
-    --muted: 0 0% 96.9%;
-    --muted-foreground: 0 0% 33.3%;
-    --accent: 217 91% 60%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
+    --popover-foreground: 222 34% 14%;
+    --primary: 192 92% 42%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 211 46% 92%;
+    --secondary-foreground: 222 34% 14%;
+    --muted: 210 34% 93%;
+    --muted-foreground: 218 18% 34%;
+    --accent: 192 92% 42%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 74% 52%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 217 91% 60%;
-    --chart-1: 217 91% 60%;
-    --chart-2: 0 0% 50%;
-    --chart-3: 0 0% 70%;
-    --chart-4: 0 0% 30%;
-    --chart-5: 0 0% 60%;
-    --radius: 0.5rem;
+    --border: 214 34% 84%;
+    --input: 214 34% 84%;
+    --ring: 192 92% 42%;
+    --chart-1: 192 92% 42%;
+    --chart-2: 88 68% 43%;
+    --chart-3: 221 64% 42%;
+    --chart-4: 263 61% 48%;
+    --chart-5: 26 83% 56%;
+    --radius: 0.9rem;
+
+    --surface: 208 49% 95%;
+    --surface-elevated: 0 0% 100%;
+    --line-soft: 212 36% 80%;
+    --hero-glow: 194 95% 45%;
+    --hero-glow-alt: 95 68% 43%;
   }
 
   .dark {
-    /* Dark theme - premium minimalist */
-    --background: 220 20% 9%;
-    --foreground: 0 0% 96%;
-    --card: 220 16% 12%;
-    --card-foreground: 0 0% 96%;
-    --popover: 220 16% 12%;
-    --popover-foreground: 0 0% 96%;
-    --primary: 0 0% 96%;
-    --primary-foreground: 220 20% 9%;
-    --secondary: 220 14% 15%;
-    --secondary-foreground: 0 0% 96%;
-    --muted: 220 12% 18%;
-    --muted-foreground: 0 0% 72%;
-    --accent: 217 91% 60%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 63% 37%;
-    --destructive-foreground: 0 0% 96%;
-    --border: 220 11% 22%;
-    --input: 220 11% 22%;
-    --ring: 217 91% 60%;
-    --chart-1: 217 91% 60%;
-    --chart-2: 0 0% 72%;
-    --chart-3: 0 0% 52%;
-    --chart-4: 0 0% 80%;
-    --chart-5: 0 0% 62%;
-  }
-}
+    color-scheme: dark;
+    --background: 225 34% 7%;
+    --foreground: 210 31% 94%;
+    --card: 224 31% 10%;
+    --card-foreground: 210 31% 94%;
+    --popover: 224 31% 10%;
+    --popover-foreground: 210 31% 94%;
+    --primary: 191 98% 64%;
+    --primary-foreground: 224 35% 9%;
+    --secondary: 224 24% 16%;
+    --secondary-foreground: 210 31% 94%;
+    --muted: 223 23% 15%;
+    --muted-foreground: 214 18% 70%;
+    --accent: 191 98% 64%;
+    --accent-foreground: 224 35% 9%;
+    --destructive: 0 64% 43%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 223 21% 22%;
+    --input: 223 21% 22%;
+    --ring: 191 98% 64%;
+    --chart-1: 191 98% 64%;
+    --chart-2: 93 71% 63%;
+    --chart-3: 215 79% 67%;
+    --chart-4: 261 73% 70%;
+    --chart-5: 23 90% 68%;
 
-@layer base {
+    --surface: 225 31% 10%;
+    --surface-elevated: 225 29% 13%;
+    --line-soft: 222 20% 25%;
+    --hero-glow: 191 98% 64%;
+    --hero-glow-alt: 96 74% 60%;
+  }
+
   * {
     @apply border-border;
   }
@@ -72,23 +82,72 @@
 
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: var(--font-body), system-ui, sans-serif;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+    background-image:
+      radial-gradient(circle at 10% 10%, hsl(var(--hero-glow) / 0.14), transparent 36%),
+      radial-gradient(circle at 85% 18%, hsl(var(--hero-glow-alt) / 0.12), transparent 30%),
+      linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--surface)) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
   }
 
-  h1 {
-    @apply text-5xl md:text-6xl font-bold tracking-tight;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading), system-ui, sans-serif;
+    letter-spacing: -0.03em;
   }
 
-  h2 {
-    @apply text-4xl md:text-5xl font-bold tracking-tight;
+  code,
+  kbd,
+  samp {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+}
+
+@layer components {
+  .section-shell {
+    @apply relative scroll-mt-28 px-4 py-20 sm:px-6 sm:py-28 lg:px-8;
   }
 
-  h3 {
-    @apply text-2xl md:text-3xl font-bold;
+  .section-inner {
+    @apply mx-auto w-full max-w-7xl;
   }
 
-  p {
-    @apply leading-7;
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/70 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground;
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .glass-panel {
+    @apply border border-white/10 bg-card/70 backdrop-blur-xl;
+    box-shadow:
+      0 30px 80px -42px hsl(var(--hero-glow) / 0.45),
+      inset 0 1px 0 hsl(0 0% 100% / 0.06);
+  }
+
+  .headline-gradient {
+    background: linear-gradient(
+      110deg,
+      hsl(var(--foreground)) 0%,
+      hsl(var(--hero-glow)) 52%,
+      hsl(var(--hero-glow-alt)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .grid-fade {
+    background-image:
+      linear-gradient(to right, hsl(var(--line-soft) / 0.32) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--line-soft) / 0.24) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(circle at center, black 40%, transparent 85%);
   }
 }
 
@@ -97,31 +156,22 @@
     text-wrap: balance;
   }
 
-  .fade-in {
-    animation: fadeIn 0.6s ease-out;
+  .shadow-glow {
+    box-shadow: 0 0 50px -20px hsl(var(--hero-glow) / 0.6);
   }
 
-  .fade-in-up {
-    animation: fadeInUp 0.6s ease-out;
+  .bg-dots {
+    background-image: radial-gradient(hsl(var(--line-soft) / 0.5) 1px, transparent 1px);
+    background-size: 20px 20px;
   }
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+  .mask-soft {
+    mask-image: linear-gradient(180deg, transparent 0%, black 12%, black 88%, transparent 100%);
   }
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .text-micro {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 }

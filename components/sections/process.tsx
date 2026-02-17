@@ -1,108 +1,36 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 
-const steps = [
-  {
-    number: '01',
-    title: 'Strategy',
-    description: 'Understanding your goals, audience, and technical requirements.',
-  },
-  {
-    number: '02',
-    title: 'Design',
-    description: 'Crafting intuitive interfaces with attention to detail and user experience.',
-  },
-  {
-    number: '03',
-    title: 'Development',
-    description: 'Building robust, scalable solutions with clean, maintainable code.',
-  },
-  {
-    number: '04',
-    title: 'Optimization',
-    description: 'Testing, monitoring, and optimizing for peak performance and reliability.',
-  },
-]
+import { ARCHITECTURE_STEPS } from '@/lib/site-content'
 
 export function ProcessSection() {
-  const [visibleSteps, setVisibleSteps] = useState(new Set<number>())
-  const refs = useRef<(HTMLDivElement | null)[]>([])
-
-  useEffect(() => {
-    const observers = refs.current.map((ref, index) => {
-      if (!ref) return null
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setVisibleSteps((prev) => new Set(prev).add(index))
-          }
-        },
-        { threshold: 0.1 }
-      )
-
-      observer.observe(ref)
-      return observer
-    })
-
-    return () => {
-      observers.forEach((observer) => observer?.disconnect())
-    }
-  }, [])
+  const reducedMotion = useReducedMotion()
 
   return (
-    <section className="relative px-4 sm:px-6 lg:px-8 py-20 sm:py-32 bg-background">
-      <div className="max-w-6xl mx-auto">
-        {/* Section Header */}
-        <div className="mb-16 sm:mb-20">
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground text-balance">
-            Our Process
+    <section id="architecture" className="section-shell">
+      <div className="section-inner">
+        <div className="mb-12 max-w-3xl sm:mb-16">
+          <span className="eyebrow">Digital Architecture Approach</span>
+          <h2 className="mt-5 text-balance text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
+            Strategy-to-optimization delivery designed for enterprise-grade execution.
           </h2>
-          <p className="text-lg text-foreground/60 mt-4 max-w-2xl">
-            A proven methodology to deliver exceptional results consistently.
-          </p>
         </div>
 
-        {/* Process Timeline */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {steps.map((step, index) => (
-            <div
-              key={index}
-              ref={(el) => {
-                refs.current[index] = el
-              }}
-              className={`relative transition-all duration-500 delay-${index * 100} ${
-                visibleSteps.has(index)
-                  ? 'opacity-100 translate-y-0'
-                  : 'opacity-0 translate-y-4'
-              }`}
+        <div className="grid gap-4 lg:grid-cols-4">
+          {ARCHITECTURE_STEPS.map((step, index) => (
+            <motion.article
+              key={step.title}
+              initial={{ opacity: 0, y: reducedMotion ? 0 : 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.5, ease: 'easeOut', delay: reducedMotion ? 0 : index * 0.08 }}
+              className="glass-panel rounded-3xl p-6"
             >
-              {/* Connection Line (hidden on mobile) */}
-              {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-1/4 -right-6 w-12 h-0.5 bg-gradient-to-r from-accent to-accent/20" />
-              )}
-
-              {/* Step Card */}
-              <div className="flex gap-4 sm:gap-6">
-                {/* Number Circle */}
-                <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full border-2 border-accent text-accent font-bold text-lg">
-                    {step.number}
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="flex-1">
-                  <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-                    {step.title}
-                  </h3>
-                  <p className="text-foreground/60 leading-relaxed">
-                    {step.description}
-                  </p>
-                </div>
-              </div>
-            </div>
+              <p className="text-micro text-xs text-muted-foreground">Stage {String(index + 1).padStart(2, '0')}</p>
+              <h3 className="mt-3 text-2xl font-semibold">{step.title}</h3>
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">{step.detail}</p>
+            </motion.article>
           ))}
         </div>
       </div>

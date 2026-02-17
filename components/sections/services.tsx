@@ -1,98 +1,43 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 
-const services = [
-  {
-    title: 'Web Platforms',
-    description: 'High-performance, SEO-first architecture built for measurable growth.',
-  },
-  {
-    title: 'Mobile Applications',
-    description: 'Scalable iOS and Android systems engineered for long-term reliability.',
-  },
-  {
-    title: 'Custom Software Systems',
-    description: 'Business workflow and operational platforms tailored to your model.',
-  },
-  {
-    title: 'AI Integration & Automation',
-    description: 'Intelligent automation, AI assistants, and connected data systems.',
-  },
-  {
-    title: 'Payment & Infrastructure Integration',
-    description: 'Secure gateway, API, and backend integrations for critical operations.',
-  },
-]
+import { OFFERINGS } from '@/lib/site-content'
 
 export function ServicesSection() {
-  const [visibleItems, setVisibleItems] = useState(new Set<number>())
-  const refs = useRef<(HTMLDivElement | null)[]>([])
-
-  useEffect(() => {
-    const observers = refs.current.map((ref, index) => {
-      if (!ref) return null
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setVisibleItems((prev) => new Set(prev).add(index))
-          }
-        },
-        { threshold: 0.1 }
-      )
-
-      observer.observe(ref)
-      return observer
-    })
-
-    return () => {
-      observers.forEach((observer) => observer?.disconnect())
-    }
-  }, [])
+  const reducedMotion = useReducedMotion()
 
   return (
-    <section
-      id="services"
-      className="relative px-4 sm:px-6 lg:px-8 py-20 sm:py-32 bg-background"
-    >
-      <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
-        <div className="mb-16 sm:mb-20">
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground text-balance">
-            What We Offer
+    <section id="offerings" className="section-shell">
+      <div className="section-inner">
+        <div className="mb-12 max-w-3xl sm:mb-16">
+          <span className="eyebrow">Our Core Offerings</span>
+          <h2 className="mt-5 text-balance text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
+            Engineered capabilities for speed, scale, and measurable progress.
           </h2>
-          <p className="text-lg text-muted-foreground mt-4 max-w-2xl">
-            Integrated capabilities for building resilient, scalable digital systems.
+          <p className="mt-4 text-lg text-muted-foreground">
+            Every service is built as part of a connected delivery system designed to move business outcomes, not just
+            ship interfaces.
           </p>
         </div>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service, index) => (
-            <div
-              key={index}
-              ref={(el) => {
-                refs.current[index] = el
-              }}
-              className={`p-6 sm:p-7 border border-border rounded-lg bg-card shadow-[0_2px_8px_rgba(17,17,17,0.03)] transition-all duration-300 ${
-                visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
-              }`}
+        <div className="grid gap-4 md:grid-cols-2">
+          {OFFERINGS.map((offering, index) => (
+            <motion.article
+              key={offering.title}
+              initial={{ opacity: 0, y: reducedMotion ? 0 : 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.5, ease: 'easeOut', delay: reducedMotion ? 0 : index * 0.08 }}
+              className="glass-panel group relative overflow-hidden rounded-3xl p-6 sm:p-7"
             >
-              <div className="inline-block mb-4">
-                <span className="text-xs font-semibold tracking-[0.08em] text-muted-foreground">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-              </div>
-
-              <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-3">
-                {service.title}
-              </h3>
-
-              <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-                {service.description}
+              <div className="absolute -right-16 top-0 h-36 w-36 rounded-full bg-[hsl(var(--hero-glow)/0.16)] blur-3xl transition-opacity duration-300 group-hover:opacity-100 sm:opacity-80" />
+              <p className="text-micro text-xs text-muted-foreground">{String(index + 1).padStart(2, '0')}</p>
+              <h3 className="mt-4 text-2xl font-semibold tracking-tight">{offering.title}</h3>
+              <p className="mt-4 max-w-md text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+                {offering.description}
               </p>
-            </div>
+            </motion.article>
           ))}
         </div>
       </div>
