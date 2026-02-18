@@ -49,6 +49,11 @@ export const metadata: Metadata = {
     description:
       'Engineering digital growth with web, mobile, software, and AI systems designed for scale.',
   },
+  icons: {
+    icon: '/favicon-dark.png',
+    shortcut: '/favicon-dark.png',
+    apple: '/favicon-dark.png',
+  },
 }
 
 export const viewport: Viewport = {
