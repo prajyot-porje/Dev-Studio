@@ -101,73 +101,7 @@ export function HeroSection() {
           </div>
         </motion.div>
 
-        <div className="relative mt-10 min-h-[160vh] sm:min-h-[175vh]">
-          <div className="sticky top-24 h-[72vh] sm:h-[75vh]">
-            <div className="mx-auto grid h-full max-w-6xl place-items-center">
-              <div className="relative h-full w-full max-w-5xl">
-                {show3D ? (
-                  <HeroScene reducedMotion={Boolean(reducedMotion)} progress={journeyProgress} />
-                ) : (
-                  <div className="shadow-glow relative h-full overflow-hidden rounded-3xl border border-white/10 bg-[linear-gradient(145deg,hsl(var(--surface-elevated)/0.9),hsl(var(--surface)/0.72))]">
-                    <div className="absolute -left-12 top-14 h-52 w-52 rounded-full bg-[hsl(var(--hero-glow)/0.28)] blur-3xl" />
-                    <div className="absolute -right-10 bottom-8 h-64 w-64 rounded-full bg-[hsl(var(--hero-glow-alt)/0.24)] blur-3xl" />
-                    <div className="absolute inset-0 grid-fade opacity-80" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="rounded-lg border border-white/20 px-5 py-2 text-micro text-xs text-foreground/80">
-                        {webglAvailable === false
-                          ? 'WebGL Unsupported - Showing Static Composition'
-                          : 'Loading 3D Scene'}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="pointer-events-none absolute inset-x-3 bottom-3 grid gap-2 rounded-2xl border border-white/10 bg-black/35 p-3 backdrop-blur lg:hidden">
-                  {journeySteps.map((step, index) => {
-                    const thresholdStart = index * 0.33
-                    const thresholdEnd = thresholdStart + 0.33
-                    const active = journeyProgress >= thresholdStart && journeyProgress < thresholdEnd
-                    return (
-                      <div
-                        key={step.title}
-                        className={`rounded-lg border px-3 py-2 text-left transition-colors ${
-                          active ? 'border-[hsl(var(--hero-glow))] bg-[hsl(var(--hero-glow)/0.18)]' : 'border-white/10'
-                        }`}
-                      >
-                        <p className="text-micro text-[10px] text-muted-foreground">Stage {index + 1}</p>
-                        <p className="mt-1 text-sm font-semibold">{step.title}</p>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="pointer-events-none absolute left-[3%] top-[10%] hidden max-w-xs lg:block">
-            <article className="glass-panel rounded-2xl p-5">
-              <p className="text-micro text-xs text-muted-foreground">Stage 01</p>
-              <h3 className="mt-2 text-2xl font-semibold">{journeySteps[0].title}</h3>
-              <p className="mt-3 text-sm text-muted-foreground">{journeySteps[0].copy}</p>
-            </article>
-          </div>
-
-          <div className="pointer-events-none absolute right-[3%] top-[42%] hidden max-w-xs lg:block">
-            <article className="glass-panel rounded-2xl p-5">
-              <p className="text-micro text-xs text-muted-foreground">Stage 02</p>
-              <h3 className="mt-2 text-2xl font-semibold">{journeySteps[1].title}</h3>
-              <p className="mt-3 text-sm text-muted-foreground">{journeySteps[1].copy}</p>
-            </article>
-          </div>
-
-          <div className="pointer-events-none absolute left-[16%] top-[74%] hidden max-w-xs lg:block">
-            <article className="glass-panel rounded-2xl p-5">
-              <p className="text-micro text-xs text-muted-foreground">Stage 03</p>
-              <h3 className="mt-2 text-2xl font-semibold">{journeySteps[2].title}</h3>
-              <p className="mt-3 text-sm text-muted-foreground">{journeySteps[2].copy}</p>
-            </article>
-          </div>
-        </div>
+        <div className='flex justify-center text-3xl items-center min-h-[800px] w-full h-full'>Work in progress</div>
       </div>
     </section>
   )
