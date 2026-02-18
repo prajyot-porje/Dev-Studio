@@ -3,8 +3,8 @@
 import { OrbitControls, useGLTF } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { motion, useInView, useReducedMotion } from 'framer-motion'
-import { Suspense, useEffect, useMemo, useRef } from 'react'
-import { Box3, Vector3 } from 'three'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { Box3, TOUCH, Vector3 } from 'three'
 
 import { cn } from '@/lib/utils'
 
@@ -96,6 +96,8 @@ type DeviceCanvasProps = {
 
 function DeviceCanvas({ src, fitScale, rotation, initialAzimuth }: DeviceCanvasProps) {
   const controlsRef = useRef<any>(null)
+  const [isCoarsePointer, setIsCoarsePointer] = useState(false)
+  const [isTwoFingerGesture, setIsTwoFingerGesture] = useState(false)
 
   useEffect(() => {
     if (!controlsRef.current) return
@@ -103,34 +105,59 @@ function DeviceCanvas({ src, fitScale, rotation, initialAzimuth }: DeviceCanvasP
     controlsRef.current.update()
   }, [initialAzimuth])
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const media = window.matchMedia('(pointer: coarse)')
+    const apply = () => setIsCoarsePointer(media.matches)
+    apply()
+    media.addEventListener('change', apply)
+
+    return () => {
+      media.removeEventListener('change', apply)
+    }
+  }, [])
+
+  const controlsEnabled = !isCoarsePointer || isTwoFingerGesture
+
   return (
-    <Canvas
-      frameloop="demand"
-      dpr={[1, 1.6]}
-      gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-      camera={{ position: [0, 0, 4.2], fov: 30 }}
-      className="touch-action-none"
+    <div
+      className="h-full w-full touch-pan-y"
+      onTouchStart={(event) => setIsTwoFingerGesture(event.touches.length >= 2)}
+      onTouchMove={(event) => setIsTwoFingerGesture(event.touches.length >= 2)}
+      onTouchEnd={(event) => setIsTwoFingerGesture(event.touches.length >= 2)}
+      onTouchCancel={() => setIsTwoFingerGesture(false)}
     >
-      <OrbitControls
-        ref={controlsRef}
-        makeDefault
-        enablePan={false}
-        enableZoom={false}
-        enableDamping
-        dampingFactor={0.09}
-        minPolarAngle={Math.PI / 2}
-        maxPolarAngle={Math.PI / 2}
-        minAzimuthAngle={-1.35}
-        maxAzimuthAngle={1.35}
-        rotateSpeed={0.68}
-      />
-      <ambientLight intensity={0.78} />
-      <directionalLight position={[3.8, 3.1, 2.4]} intensity={1.05} color="#a6e9ff" />
-      <directionalLight position={[-2.6, -1.4, 3]} intensity={0.42} color="#bcffcc" />
-      <Suspense fallback={null}>
-        <DeviceModel src={src} fitScale={fitScale} rotation={rotation} />
-      </Suspense>
-    </Canvas>
+      <Canvas
+        frameloop="demand"
+        dpr={[1, 1.6]}
+        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+        camera={{ position: [0, 0, 4.2], fov: 30 }}
+        className="h-full w-full touch-pan-y"
+      >
+        <OrbitControls
+          ref={controlsRef}
+          makeDefault
+          enabled={controlsEnabled}
+          enablePan={false}
+          enableZoom={false}
+          enableDamping
+          dampingFactor={0.09}
+          minPolarAngle={Math.PI / 2}
+          maxPolarAngle={Math.PI / 2}
+          minAzimuthAngle={-1.35}
+          maxAzimuthAngle={1.35}
+          rotateSpeed={0.68}
+          touches={{ ONE: TOUCH.ROTATE, TWO: TOUCH.ROTATE }}
+        />
+        <ambientLight intensity={0.78} />
+        <directionalLight position={[3.8, 3.1, 2.4]} intensity={1.05} color="#a6e9ff" />
+        <directionalLight position={[-2.6, -1.4, 3]} intensity={0.42} color="#bcffcc" />
+        <Suspense fallback={null}>
+          <DeviceModel src={src} fitScale={fitScale} rotation={rotation} />
+        </Suspense>
+      </Canvas>
+    </div>
   )
 }
 
@@ -166,7 +193,7 @@ function DeviceStage({
           reverse && 'lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]'
         )}
       >
-        <div className={cn('relative z-10 max-w-xl space-y-5', reverse && 'lg:order-2 lg:ml-auto')}>
+        <div className={cn('relative z-10 max-w-xl space-y-5 px-4 sm:px-0', reverse && 'lg:order-2 lg:ml-auto')}>
           <p className="text-micro text-muted-foreground/90">{item.indexLabel}</p>
           <h3 className="text-balance font-heading text-3xl font-semibold leading-[0.94] sm:text-4xl lg:text-5xl">
             {item.title}
