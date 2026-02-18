@@ -39,8 +39,7 @@ export function Header() {
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 lg:px-8">
       <div className="section-inner flex h-16 items-center justify-between rounded-2xl border border-white/10 bg-background/72 px-4 backdrop-blur-xl sm:px-5">
         <Link href="#top" className="inline-flex items-center gap-3 transition-opacity hover:opacity-85">
-          <LogoMark className="h-10 w-10 border-white/20 bg-black text-white dark:bg-white dark:text-black" />
-          <span className="font-heading text-lg font-semibold tracking-tight">Dev Studio</span>
+          <span className="font-heading text-2xl p-4 font-semibold tracking-tight">Dev Studio</span>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">

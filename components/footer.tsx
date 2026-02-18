@@ -12,8 +12,7 @@ export function Footer() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
             <Link href="#top" className="inline-flex items-center gap-3">
-              <LogoMark className="h-11 w-11 border-white/20 bg-black text-white dark:bg-white dark:text-black" />
-              <span className="font-heading text-xl font-semibold tracking-tight">Dev Studio</span>
+              <span className="font-heading text-3xl font-semibold tracking-tight">Dev Studio</span>
             </Link>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
               Premium technology consultancy focused on engineering digital growth through scalable systems, not one-off
