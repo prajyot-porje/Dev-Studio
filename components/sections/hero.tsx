@@ -2,14 +2,14 @@
 
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from 'framer-motion'
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button-premium'
 import { ParallaxBackground } from '@/components/visuals/parallax-background'
 
-const HeroScene = dynamic(
-  () => import('@/components/visuals/hero-scene').then((module) => module.HeroScene),
+const DeviceModelStack = dynamic(
+  () => import('@/components/visuals/device-model-stack').then((module) => module.DeviceModelStack),
   { ssr: false }
 )
 
@@ -24,26 +24,10 @@ function supportsWebGL() {
   }
 }
 
-const journeySteps = [
-  {
-    title: 'Web Platforms',
-    copy: 'Conversion-focused web foundations designed to perform under scale, speed, and growth pressure.',
-  },
-  {
-    title: 'Mobile Applications',
-    copy: 'Reliable mobile journeys that balance usability, product clarity, and long-term engagement.',
-  },
-  {
-    title: 'AI & Automation',
-    copy: 'Intelligent automation layers that simplify operations and accelerate decision-making.',
-  },
-]
-
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const reducedMotion = useReducedMotion()
   const [webglAvailable, setWebglAvailable] = useState<boolean | null>(null)
-  const [journeyProgress, setJourneyProgress] = useState(0)
 
   useEffect(() => {
     setWebglAvailable(supportsWebGL())
@@ -54,17 +38,11 @@ export function HeroSection() {
     offset: ['start start', 'end end'],
   })
 
-  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
-    const delayed = (latest - 0.08) / 0.84
-    const normalized = Math.max(0, Math.min(1, delayed))
-    setJourneyProgress(normalized)
-  })
-
   const show3D = webglAvailable === true
   const headerY = useTransform(scrollYProgress, [0, 0.5], [0, -26])
 
   return (
-    <section ref={sectionRef} id="top" className="relative min-h-[230vh] overflow-hidden pt-28 sm:pt-32 lg:pt-36">
+    <section ref={sectionRef} id="top" className="relative overflow-hidden pt-28 sm:pt-32 lg:pt-36">
       <ParallaxBackground strength={260} className="mask-soft" />
 
       <div className="section-inner relative">
@@ -93,7 +71,7 @@ export function HeroSection() {
               <Button
                 size="lg"
                 variant="outlineNeutral"
-                className="h-12 rounded-lg border-white/20 bg-background/40 px-8 text-[0.94rem] backdrop-blur"
+                className="h-12 rounded-lg border-[hsl(var(--line-soft)/0.9)] bg-background/40 px-8 text-[0.94rem] backdrop-blur dark:border-white/20"
               >
                 Explore Work
               </Button>
@@ -101,7 +79,7 @@ export function HeroSection() {
           </div>
         </motion.div>
 
-        <div className='flex justify-center text-3xl items-center min-h-[800px] w-full h-full'>Work in progress</div>
+        <DeviceModelStack enabled={show3D} />
       </div>
     </section>
   )
