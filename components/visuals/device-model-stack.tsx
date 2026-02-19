@@ -4,7 +4,7 @@ import { OrbitControls, useGLTF } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
-import { Box3, TOUCH, Vector3 } from 'three'
+import { Box3, Vector3 } from 'three'
 
 import { cn } from '@/lib/utils'
 
@@ -122,10 +122,19 @@ function DeviceCanvas({ src, fitScale, rotation, initialAzimuth }: DeviceCanvasP
 
   return (
     <div
-      className="h-full w-full touch-pan-y"
-      onTouchStart={(event) => setIsTwoFingerGesture(event.touches.length >= 2)}
-      onTouchMove={(event) => setIsTwoFingerGesture(event.touches.length >= 2)}
-      onTouchEnd={(event) => setIsTwoFingerGesture(event.touches.length >= 2)}
+      className="relative h-full w-full touch-pan-y"
+      onTouchStart={(event) => {
+        if (!isCoarsePointer) return
+        setIsTwoFingerGesture(event.touches.length >= 2)
+      }}
+      onTouchMove={(event) => {
+        if (!isCoarsePointer) return
+        setIsTwoFingerGesture(event.touches.length >= 2)
+      }}
+      onTouchEnd={(event) => {
+        if (!isCoarsePointer) return
+        setIsTwoFingerGesture(event.touches.length >= 2)
+      }}
       onTouchCancel={() => setIsTwoFingerGesture(false)}
     >
       <Canvas
@@ -133,7 +142,7 @@ function DeviceCanvas({ src, fitScale, rotation, initialAzimuth }: DeviceCanvasP
         dpr={[1, 1.6]}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
         camera={{ position: [0, 0, 4.2], fov: 30 }}
-        className="h-full w-full touch-pan-y"
+        className={cn('h-full w-full touch-pan-y', isCoarsePointer && !isTwoFingerGesture && 'pointer-events-none')}
       >
         <OrbitControls
           ref={controlsRef}
@@ -148,7 +157,6 @@ function DeviceCanvas({ src, fitScale, rotation, initialAzimuth }: DeviceCanvasP
           minAzimuthAngle={-1.35}
           maxAzimuthAngle={1.35}
           rotateSpeed={0.68}
-          touches={{ ONE: TOUCH.ROTATE, TWO: TOUCH.ROTATE }}
         />
         <ambientLight intensity={0.78} />
         <directionalLight position={[3.8, 3.1, 2.4]} intensity={1.05} color="#a6e9ff" />
@@ -157,6 +165,12 @@ function DeviceCanvas({ src, fitScale, rotation, initialAzimuth }: DeviceCanvasP
           <DeviceModel src={src} fitScale={fitScale} rotation={rotation} />
         </Suspense>
       </Canvas>
+
+      {isCoarsePointer && (
+        <p className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-[hsl(var(--line-soft)/0.75)] bg-background/80 px-3 py-1 text-[11px] text-micro text-muted-foreground backdrop-blur">
+          Use two fingers to rotate
+        </p>
+      )}
     </div>
   )
 }

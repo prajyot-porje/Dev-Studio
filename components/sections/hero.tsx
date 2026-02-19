@@ -1,44 +1,21 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 
 import { Button } from '@/components/ui/button-premium'
 import { ParallaxBackground } from '@/components/visuals/parallax-background'
 
-const DeviceModelStack = dynamic(
-  () => import('@/components/visuals/device-model-stack').then((module) => module.DeviceModelStack),
-  { ssr: false }
-)
-
-function supportsWebGL() {
-  if (typeof window === 'undefined') return false
-
-  try {
-    const canvas = document.createElement('canvas')
-    return Boolean(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
-  } catch {
-    return false
-  }
-}
-
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const reducedMotion = useReducedMotion()
-  const [webglAvailable, setWebglAvailable] = useState<boolean | null>(null)
-
-  useEffect(() => {
-    setWebglAvailable(supportsWebGL())
-  }, [])
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end end'],
   })
 
-  const show3D = webglAvailable === true
   const headerY = useTransform(scrollYProgress, [0, 0.5], [0, -26])
 
   return (
@@ -78,8 +55,6 @@ export function HeroSection() {
             </Link>
           </div>
         </motion.div>
-
-        <DeviceModelStack enabled={show3D} />
       </div>
     </section>
   )

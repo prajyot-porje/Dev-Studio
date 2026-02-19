@@ -1,6 +1,7 @@
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import { CTASection } from '@/components/sections/cta'
+import { DeviceShowcaseSection } from '@/components/sections/device-showcase'
 import { EngagementSection } from '@/components/sections/engagement'
 import { HeroSection } from '@/components/sections/hero'
 import { OutcomesSection } from '@/components/sections/outcomes'
@@ -16,6 +17,7 @@ export default function Page() {
       <Header />
       <HeroSection />
       <ServicesSection />
+      <DeviceShowcaseSection />
       <ValueDriversSection />
       <ProcessSection />
       <TechnologySection />
